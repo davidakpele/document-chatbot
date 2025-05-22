@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: rag-llm-system
+    ports:
+      - "8501:8501"
+    depends_on:
+      - ollama
+    environment:
+      - STREAMLIT_SERVER_ENABLE_FILE_WATCHER=false
+      - STREAMLIT_WATCHDOG_MODE=poll
+      - HF_HUB_DISABLE_SYMLINKS_WARNING=1
+      - TOKENIZERS_PARALLELISM=false
+      - TF_CPP_MIN_LOG_LEVEL=2
+      - KMP_DUPLICATE_LIB_OK=TRUE
+      - OLLAMA_BASE_URL=http://ollama:11434
+    volumes:
+      - .:/app
+
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  ollama_data:
+ 
